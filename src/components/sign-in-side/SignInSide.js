@@ -1,11 +1,11 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
+// import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -13,7 +13,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Copyright from '../footer/Copyright.js'
-
+import {Link} from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
+import {login} from '../../actions/userActions'
+ 
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,8 +51,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
+ const SignInSide = ({location, history}) => {
   const classes = useStyles();
+  const [email,setEmail] = useState('') 
+  const [password,setPassword] = useState('') 
+
+
+  const dispatch = useDispatch()
+  const userLogin = useSelector(state => state.userLogin)
+  const {loading, error, userInfo} = userLogin
+
+  const redirect = location.search ? location.search.split('=')[1] : '/dashboard'
+
+  useEffect(() => {
+    if(userInfo){
+      history.push(redirect)
+    }
+  }, [history, userInfo, redirect])
+
+
+
+  const onSubmit = e => {
+    e.preventDefault()
+    dispatch(login(email, password))
+  }
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -63,7 +88,9 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} noValidate>
+          {error && <Typography component="p" variant="p" >{error}</Typography>}  
+          {loading && <Typography component="p" variant="p" >{loading}</Typography>}  
+          <form className={classes.form} onSubmit={e => onSubmit(e)} validate>
             <TextField
               variant="outlined"
               margin="normal"
@@ -72,6 +99,7 @@ export default function SignInSide() {
               id="email"
               label="Email Address"
               name="email"
+              onChange={e => setEmail(e.target.value)}
               autoComplete="email"
               autoFocus
             />
@@ -84,6 +112,7 @@ export default function SignInSide() {
               label="Password"
               type="password"
               id="password"
+              onChange={e => setPassword(e.target.value)}
               autoComplete="current-password"
             />
             <FormControlLabel
@@ -105,7 +134,7 @@ export default function SignInSide() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link to={redirect ? `/sign-up?redirect=${redirect}` : '/sign-up'} variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
@@ -119,3 +148,6 @@ export default function SignInSide() {
     </Grid>
   );
 }
+
+
+export default SignInSide
