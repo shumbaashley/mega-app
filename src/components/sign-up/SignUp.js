@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +13,9 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Copyright from '../footer/Copyright.js'
+import {useDispatch, useSelector} from 'react-redux'
+import { signup } from '../../actions/userActions.js';
+  
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,8 +38,37 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp() {
+const SignUp = ({history, location}) => {
   const classes = useStyles();
+
+  const [firstname, setFirstname] = useState('')
+  const [lastname, setLastname] = useState('')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmpassword, setConfirmPassword] = useState('')
+
+  const dispatch = useDispatch()
+
+  const userSignup = useSelector(state => state.userSignup)
+  const {loading, error, userInfo} = userSignup
+  const redirect = location.search ? location.search.split('=')[1] : '/dashboard'
+
+  useEffect(() => {
+    if(userInfo){
+      history.push(redirect)
+    }
+  }, [history, userInfo, redirect])
+
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    if(password !== confirmpassword){
+        console.log("Passwords do not match")
+    } else {
+      dispatch(signup(firstname, lastname, username, email, password))
+    }
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -48,18 +80,21 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        {error && <Typography component="p" variant="p" >{error}</Typography>}  
+        {loading && <Typography component="p" variant="p" >loading...</Typography>}
+        <form className={classes.form} onSubmit={e => onSubmit(e)} validate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="firstname"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
+                id="firstname"
                 label="First Name"
                 autoFocus
+                onChange={e => setFirstname(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -67,10 +102,23 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                id="lastName"
+                id="lastname"
                 label="Last Name"
-                name="lastName"
+                name="lastname"
                 autoComplete="lname"
+                onChange={e => setLastname(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                autoComplete="username"
+                name="username"
+                variant="outlined"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                onChange={e => setUsername(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -82,6 +130,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={e => setEmail(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -94,6 +143,20 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={e => setPassword(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="confirmpassword"
+                label="Confirm Password"
+                type="password"
+                id="confirmpassword"
+                autoComplete="current-password"
+                onChange={e => setConfirmPassword(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -113,7 +176,7 @@ export default function SignUp() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link to={redirect ? `/sign-in-side?redirect=${redirect}`  : '/sign-in-side'} variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
@@ -126,3 +189,6 @@ export default function SignUp() {
     </Container>
   );
 }
+
+
+export default SignUp

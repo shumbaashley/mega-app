@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
             Sign in
           </Typography>
           {error && <Typography component="p" variant="p" >{error}</Typography>}  
-          {loading && <Typography component="p" variant="p" >{loading}</Typography>}  
+          {loading && <Typography component="p" variant="p" >loading...</Typography>}  
           <form className={classes.form} onSubmit={e => onSubmit(e)} validate>
             <TextField
               variant="outlined"

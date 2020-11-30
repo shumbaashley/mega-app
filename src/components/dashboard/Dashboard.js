@@ -17,13 +17,14 @@ import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import PersonIcon from '@material-ui/icons/Person';
 import { mainListItems, secondaryListItems } from './listItems';
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
 import Copyright from '../footer/Copyright.js'
-
+import {useDispatch, useSelector} from 'react-redux'
+import {logout} from '../../actions/userActions'
 
 const drawerWidth = 240;
 
@@ -111,12 +112,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Dashboard() {
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  const userLogin = useSelector(state => state.userLogin)
+  const {userInfo} = userLogin
+
+  const dispatch = useDispatch()
+
+  const logoutHandler = () => {
+    dispatch(logout())
+  }
+
 
   return (
     <div className={classes.root}>
@@ -147,11 +159,21 @@ export default function Dashboard() {
           >
             Dashboard
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
+          
+          {userInfo ? (
+            <>
+            <IconButton color="inherit">
+              <PersonIcon />
           </IconButton>
+            <Typography>
+              {userInfo.username}
+            </Typography>
+            
+            <Typography onClick={logoutHandler}>
+              Logout
+            </Typography>
+          </>
+          ) : null }
         </Toolbar>
       </AppBar>
       <Drawer
