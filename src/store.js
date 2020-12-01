@@ -3,10 +3,12 @@ import thunk from 'redux-thunk'
 import {composeWithDevTools} from 'redux-devtools-extension'
 
 import {userLoginReducer, userSignUpReducer} from './reducers/userReducers'
+import { productListReducer } from './reducers/productReducers'
 
 const reducer = combineReducers({
     userLogin : userLoginReducer,
-    userSignup : userSignUpReducer
+    userSignup : userSignUpReducer,
+    productList : productListReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null

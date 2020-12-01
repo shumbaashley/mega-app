@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
@@ -14,6 +14,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import Copyright from '../footer/Copyright.js'
+import {useDispatch, useSelector} from 'react-redux'
+import { listProducts } from '../../actions/productActions.js';
+
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -49,8 +52,15 @@ const useStyles = makeStyles((theme) => ({
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-export default function Album() {
+ const Store = () => {
   const classes = useStyles();
+
+  const dispatch = useDispatch()
+  const productList = useSelector(state => state.productList)
+  const {loading, error, products} = productList
+  useEffect(() => {
+    dispatch(listProducts())
+  }, [dispatch])
 
   return (
     <React.Fragment>
@@ -59,7 +69,7 @@ export default function Album() {
         <Toolbar>
           <CameraIcon className={classes.icon} />
           <Typography variant="h6" color="inherit" noWrap>
-            Album layout
+            Mega Store
           </Typography>
         </Toolbar>
       </AppBar>
@@ -74,7 +84,7 @@ export default function Album() {
               color="textPrimary"
               gutterBottom
             >
-              Album layout
+              Mega Store
             </Typography>
             <Typography
               variant="h5"
@@ -101,30 +111,38 @@ export default function Album() {
         <Container className={classes.cardGrid} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
+            {loading ? <h2>Loading</h2>: error ? <h3>{error}</h3> : (
+            
+            products.map((product) => (
+              <Grid item key={product._id} xs={12} sm={6} md={4}>
                 <Card className={classes.card}>
                   <CardMedia
                     className={classes.cardMedia}
-                    image="https://source.unsplash.com/random"
-                    title="Image title"
+                    image={product.image}
+                    title={product.name}
                   />
                   <CardContent className={classes.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Heading
+                      {product.name}
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe
-                      the content.
+                      {product.description}
+                    </Typography>
+                    <Typography gutterTop variant="h5" component="h3">
+                      ${product.price}
                     </Typography>
                   </CardContent>
                   <CardActions>
                     <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
+                    <Button size="small">Add to Cart</Button>
                   </CardActions>
                 </Card>
               </Grid>
-            ))}
+            ))
+            )
+            
+            }
+            
           </Grid>
         </Container>
       </main>
@@ -147,3 +165,5 @@ export default function Album() {
     </React.Fragment>
   );
 }
+
+export default Store
