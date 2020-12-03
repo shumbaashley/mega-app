@@ -16,6 +16,7 @@ import Copyright from '../footer/Copyright.js'
 import {Link} from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
 import {login} from '../../actions/userActions'
+import Loader from '../Loader.js';
  
 
 const useStyles = makeStyles((theme) => ({
@@ -89,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
             Sign in
           </Typography>
           {error && <Typography component="p" variant="p" >{error}</Typography>}  
-          {loading && <Typography component="p" variant="p" >loading...</Typography>}  
+          {loading && <Loader/>}  
           <form className={classes.form} onSubmit={e => onSubmit(e)} validate>
             <TextField
               variant="outlined"

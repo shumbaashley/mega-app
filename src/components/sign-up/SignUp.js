@@ -15,6 +15,7 @@ import Container from '@material-ui/core/Container';
 import Copyright from '../footer/Copyright.js'
 import {useDispatch, useSelector} from 'react-redux'
 import { signup } from '../../actions/userActions.js';
+import Loader from '../Loader.js';
   
 
 
@@ -81,7 +82,7 @@ const SignUp = ({history, location}) => {
           Sign up
         </Typography>
         {error && <Typography component="p" variant="p" >{error}</Typography>}  
-        {loading && <Typography component="p" variant="p" >loading...</Typography>}
+        {loading && <Loader/>}
         <form className={classes.form} onSubmit={e => onSubmit(e)} validate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

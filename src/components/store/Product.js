@@ -12,10 +12,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {Link} from 'react-router-dom'
+import Link from '@material-ui/core/Link';
 import Copyright from '../footer/Copyright.js'
 import {useDispatch, useSelector} from 'react-redux'
-import { listProducts } from '../../actions/productActions.js';
+import { listProducts, getSingleProduct } from '../../actions/productActions.js';
 import Loader from '../Loader.js';
 import Header from './StoreHeader.js';
 import StoreFooter from './StoreFooter.js';
@@ -55,14 +55,14 @@ const useStyles = makeStyles((theme) => ({
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
- const Store = () => {
+ const Product = ({match}) => {
   const classes = useStyles();
 
   const dispatch = useDispatch()
-  const productList = useSelector(state => state.productList)
-  const {loading, error, products} = productList
+  const singleProduct = useSelector(state => state.singleProduct)
+  const {loading, error, product} = singleProduct
   useEffect(() => {
-    dispatch(listProducts())
+    dispatch(getSingleProduct(match.params.id))
   }, [dispatch])
 
   return (
@@ -70,47 +70,11 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       <CssBaseline />
       <Header/>
       <main>
-        {/* Hero unit */}
-        <div className={classes.heroContent}>
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              Mega Store
-            </Typography>
-            <Typography
-              variant="h5"
-              align="center"
-              color="textSecondary"
-              paragraph
-            >
-              Something short and leading about the collection below—its
-              contents, the creator, etc. Make it short and sweet, but not too
-              short so folks don&apos;t simply skip over it entirely.
-            </Typography>
-            <div className={classes.heroButtons}>
-              <Grid container spacing={2} justifyContent="center">
-                <Grid item>
-                  <Button variant="contained">Main call to action</Button>
-                </Grid>
-                <Grid item>
-                  <Button variant="outlined">Secondary action</Button>
-                </Grid>
-              </Grid>
-            </div>
-          </Container>
-        </div>
         <Container className={classes.cardGrid} maxWidth="md">
-          {/* End hero unit */}
           <Grid container spacing={4}>
             {loading ? <Loader/> : error ? <h3>{error}</h3> : (
             
-            products.map((product) => (
-              <Grid item key={product._id} xs={12} sm={6} md={4}>
+              <Grid item key={product._id} xs={12} sm={6} md={6}>
                 <Card className={classes.card}>
                   <CardMedia
                     className={classes.cardMedia}
@@ -129,12 +93,12 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Link to={`store/product/${product._id}`}><Button size="small">View</Button></Link>
+                    <Button size="small">View</Button>
                     <Button size="small">Add to Cart</Button>
                   </CardActions>
                 </Card>
               </Grid>
-            ))
+        
             )
             
             }
@@ -142,9 +106,9 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
           </Grid>
         </Container>
       </main>
-      <StoreFooter/>
+        <StoreFooter/>
     </React.Fragment>
   );
 }
 
-export default Store
+export default Product
