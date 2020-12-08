@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
  const Product = ({match}) => {
   const classes = useStyles();
 
+  const qty = 1
   const dispatch = useDispatch()
   const singleProduct = useSelector(state => state.singleProduct)
   const {loading, error, product} = singleProduct
@@ -47,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   }, [dispatch, match])
 
   const addItemToCart = () => {
-    dispatch(addToCart(match.params.id))
+    dispatch(addToCart(match.params.id, qty))
   }
 
   return (
