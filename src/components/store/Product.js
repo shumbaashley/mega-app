@@ -15,7 +15,7 @@ import Loader from '../Loader.js';
 import Header from './StoreHeader.js';
 import StoreFooter from './StoreFooter.js';
 import {Link} from 'react-router-dom'
-import { addToCart } from '../../actions/cartActions.js';
+import { addToCart , removeFromCart} from '../../actions/cartActions.js';
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -47,10 +47,14 @@ const useStyles = makeStyles((theme) => ({
     dispatch(getSingleProduct(match.params.id))
   }, [dispatch, match])
 
-  const addItemToCart = () => {
-    dispatch(addToCart(match.params.id, qty))
+  const addItemToCart = (id) => {
+    dispatch(addToCart(id, qty))
   }
 
+
+  const removeItemFromCart = (id) => {
+    dispatch(removeFromCart(id))
+  }
   return (
     <React.Fragment>
       <CssBaseline />
@@ -85,8 +89,8 @@ const useStyles = makeStyles((theme) => ({
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Review</Button>
-                    <Button onClick={addItemToCart()} size="small">Add to Cart</Button>
+                    <Button onClick={() => removeItemFromCart(product._id)} size="small">Review</Button>
+                    <Button onClick={() => addItemToCart(product._id)} size="small">Add to Cart</Button>
                   </CardActions>
                 </Card>
               </Grid>
